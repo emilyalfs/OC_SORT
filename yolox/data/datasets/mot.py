@@ -16,7 +16,7 @@ class MOTDataset(Dataset):
     def __init__(
         self,
         data_dir=None,
-        json_file="train_half.json",
+        json_file="train.json",
         name="train",
         img_size=(608, 1088),
         preproc=None,
@@ -32,7 +32,7 @@ class MOTDataset(Dataset):
         """
         super().__init__(img_size)
         if data_dir is None:
-            data_dir = os.path.join(get_yolox_datadir(), "mot")
+            data_dir = os.path.join(get_yolox_datadir(), "marblerats")
         self.data_dir = data_dir
         self.json_file = json_file
 
@@ -75,10 +75,11 @@ class MOTDataset(Dataset):
         res = np.zeros((num_objs, 6))
 
         for ix, obj in enumerate(objs):
+            #print(obj.keys())
             cls = self.class_ids.index(obj["category_id"])
             res[ix, 0:4] = obj["clean_bbox"]
             res[ix, 4] = cls
-            res[ix, 5] = obj["track_id"]
+            res[ix, 5] = obj["id"]
 
         file_name = im_ann["file_name"] if "file_name" in im_ann else "{:012}".format(id_) + ".jpg"
         img_info = (height, width, frame_id, video_id, file_name)
@@ -92,14 +93,13 @@ class MOTDataset(Dataset):
 
     def pull_item(self, index):
         id_ = self.ids[index]
-
+        
         res, img_info, file_name = self.annotations[index]
         # load image and preprocess
         img_file = os.path.join(
-            self.data_dir, self.name, file_name
+            self.data_dir, file_name
         )
         img = cv2.imread(img_file)
-
         assert img is not None
 
         return img, res.copy(), img_info, np.array([id_])
