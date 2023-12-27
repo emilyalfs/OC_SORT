@@ -142,7 +142,7 @@ visualizations
 results/
 error_log.txt
 dance_detections/
-
-
+pretrained/
+*.yaml
 # IDE
 .vs
