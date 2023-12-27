@@ -64,7 +64,8 @@ def main(exp, args, num_gpu):
         gt_type = ''
         seqs = "MOT20-test" if args.mot20 else "MOT17-test"
     else:
-        assert 0
+        gt_type = ''
+        seqs = "marblerats"
 
     result_folder = "{}_test_results".format(args.expn) if args.test else "{}_results".format(args.expn)
     file_name = os.path.join(exp.output_dir, seqs, result_folder)
